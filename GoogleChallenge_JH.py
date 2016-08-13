@@ -24,7 +24,6 @@ def answer(document, searchTerms):
     textLength = len(textList)
     #k will be the current position all along the document
     k = 0
-    lengthPos = 0
     positions = {}
     termsNumber = len(searchTerms)
     termsList = []
@@ -35,12 +34,12 @@ def answer(document, searchTerms):
                 start = k
                 #Start filling in the positions dictionnary and building the list of search terms:
                 positions[textList[k]] = [k]
-                lengthPos +=1
                 termsList.append(textList[k])
         k+=1
+        lengthPos = 1
     #Find the remaining search terms in the document to build an initial list
     #and record positions as they are encountered:   
-    while lengthPos < termsNumber:
+    while k < textLength and lengthPos < termsNumber:
         for i in range(termsNumber):
             if textList[k] == searchTerms[i]:
                 if textList[k] in positions.keys():
@@ -55,38 +54,52 @@ def answer(document, searchTerms):
     listOptimise(positions, termsList)
     #We have an initial optimised list. Now record length and start:
     length = k - positions[termsList[0]][0]
+    print k, positions[termsList[0]][0]
     start = positions[termsList[0]][0]
     while k < textLength:
-        #Look for next appearance of 1st item in the current list.
+        #Look for next appearance of 1st item in the current optimised list.
         #Along the way, record the search terms appearing:
-        while (k<textLength and textList[k]<>termsList[0]):
+        while (k < textLength and textList[k]<>termsList[0]):
             for i in range(termsNumber):
                 if textList[k] == searchTerms[i]:
                     positions[textList[k]].append(k)
                     termsList.append(textList[k])
             k+=1
-        #Now we have found a candidate list with everything in. Time to optimise:
-        listOptimise(positions, termsList)
-        #Check if current optimised list is shorter than shortest so far.
-        #If so, record start and length:
-        if (k - positions[termsList[0]][0] +1)<length:
-            length = k - positions[termsList[0]][0]
-            start = positions[termsList[0]][0]
+        #If not reached end of list, means that we found another instance of 1st item
+        #so record position and add to list of occurences
+        if k < textLength:
+            positions[textList[k]].append(k)
+            termsList.append(k)
+            #Now we have found a candidate list with everything in. Time to optimise:
+            listOptimise(positions, termsList)
+            #Check if current optimised list is shorter than shortest so far.
+            #If so, record start and length:
+            if (k - positions[termsList[1]][0])<length:
+                length = k - positions[termsList[1]][0] + 1
+                start = positions[termsList[1]][0]
         #and again:
         k+=1
     return string.join(textList[start:(start+length)])
     
-text = 'a b c d e f g h'
-terms = ['b', 'e']   
+text = "a b c d e f g h"
+terms = ["b", "e"]   
 
 terms[1:]
 
 answer(text, terms) 
 
+test1 = "many google employees can program"
+search1 = ["google", "program"]
 
+answer(test1, search1)
+
+test2 = "a b c d a"
+search2 = ["a", "c", "d"]
         
 
 dico = {'a':[1, 3], 'b':[0, 2, 5], 'c':[8]}
 mylist = ['b', 'a', 'b', 'a', 'b', 'c']
+
+mylist[1:1+3]
 
 listOptimise(dico, mylist)
