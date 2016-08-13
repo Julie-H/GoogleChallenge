@@ -12,7 +12,7 @@ tup = ['a']
 
 def listOptimise(positions, termsList):
     while len(positions[termsList[0]])>1:
-         #Remove the position of the 1st item of the list
+        #Remove the position of the 1st item of the list
         positions[termsList[0]] = positions[termsList[0]][1:]
         #Remove the 1st item from the list
         termsList = termsList[1:]
@@ -54,7 +54,6 @@ def answer(document, searchTerms):
     listOptimise(positions, termsList)
     #We have an initial optimised list. Now record length and start:
     length = k - positions[termsList[0]][0]
-    print k, positions[termsList[0]][0]
     start = positions[termsList[0]][0]
     while k < textLength:
         #Look for next appearance of 1st item in the current optimised list.
